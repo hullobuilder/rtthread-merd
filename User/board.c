@@ -80,8 +80,8 @@ void rt_hw_board_init()
     SysTick_Config( SystemCoreClock / RT_TICK_PER_SECOND );	
     
     /* 硬件BSP初始化统统放在这里，比如LED，串口，LCD等 */
-
-
+    local_led_init();
+    
 
 /* 调用组件初始化函数 (use INIT_BOARD_EXPORT()) */
 #ifdef RT_USING_COMPONENTS_INIT
@@ -93,6 +93,8 @@ void rt_hw_board_init()
 #endif
     
 #if defined(RT_USING_USER_MAIN) && defined(RT_USING_HEAP)
+    // 使用内部的SRAM时作为堆，实际上传入的是只是内部RAM的起始和结束地址
+    // 若使用外部SDRAM作为堆，这两个形参直接传入外部 SDRAM 地址范围内的地址即可
     rt_system_heap_init(rt_heap_begin_get(), rt_heap_end_get());
 #endif
 }
@@ -117,4 +119,35 @@ void SysTick_Handler(void)
 
     /* 离开中断 */
     rt_interrupt_leave();
+}
+
+/**
+  * @brief  重映射串口DEBUG_USARTx到rt_kprintf()函数
+  *   Note：DEBUG_USARTx是在bsp_usart.h中定义的宏，默认使用串口1
+  * @param  str：要输出到串口的字符串
+  * @retval 无
+  *
+  * @attention
+  * 
+  */
+void rt_hw_console_output(const char *str)
+{
+    /* 进入临界段 */
+    rt_enter_critical();
+
+    /* 直到字符串结束 */
+    while (*str!='\0')
+    {
+        if (*str=='\n')
+        {
+            USART_SendData(DEBUG_USARTx, '\r');
+            while (USART_GetFlagStatus(DEBUG_USARTx, USART_FLAG_TXE) == RESET);
+        }
+
+        USART_SendData(DEBUG_USARTx, *str++);
+        while (USART_GetFlagStatus(DEBUG_USARTx, USART_FLAG_TXE) == RESET);
+    }
+
+    /* 退出临界段 */
+    rt_exit_critical();
 }
