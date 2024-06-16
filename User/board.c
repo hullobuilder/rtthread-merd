@@ -81,7 +81,7 @@ void rt_hw_board_init()
     
     /* 硬件BSP初始化统统放在这里，比如LED，串口，LCD等 */
     local_led_init();
-    
+    usart1_init(115200);
 
 /* 调用组件初始化函数 (use INIT_BOARD_EXPORT()) */
 #ifdef RT_USING_COMPONENTS_INIT
@@ -89,7 +89,7 @@ void rt_hw_board_init()
 #endif
     
 #if defined(RT_USING_CONSOLE) && defined(RT_USING_DEVICE)
-	rt_console_set_device(RT_CONSOLE_DEVICE_NAME);
+    rt_console_set_device(RT_CONSOLE_DEVICE_NAME);
 #endif
     
 #if defined(RT_USING_USER_MAIN) && defined(RT_USING_HEAP)

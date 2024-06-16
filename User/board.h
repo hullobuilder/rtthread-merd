@@ -10,6 +10,7 @@
 #include "stm32f10x.h"
 
 /* ������Ӳ��bspͷ�ļ� */
+#include "bsp_cfg.h"
 #include "bsp_led.h"
 #include "bsp_usart.h"
 /*

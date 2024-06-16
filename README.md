@@ -14,7 +14,7 @@
 10. 
 
 support feature:
-- LED
+- LED                        [√]
 - BEEP
 - OLED
 - DBG module

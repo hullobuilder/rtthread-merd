@@ -6,13 +6,10 @@ static rt_thread_t led_thread = RT_NULL;
 static void led_thread_entry(void* parameter)
 {
     while(1){
-        LOCAL_LED_ON;
+        LOCAL_LED0_TOGGLE;
+        LOCAL_LED1_TOGGLE;
         rt_thread_delay(500);
         rt_kprintf("led_thread running: led_on\r\n");
-        
-        LOCAL_LED_OFF;
-        rt_thread_delay(500);
-        rt_kprintf("led_thread running: led_off\r\n");
     }
 }
 
